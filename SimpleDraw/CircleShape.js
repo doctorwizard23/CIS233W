@@ -12,26 +12,25 @@ if(CanvasRenderingContext2D.prototype.ellipse === undefined) {
 }
 
 CircleShape.prototype = new Shape({});
+CircleShape.prototype.draw = function(context, width, height) {
+    Shape.prototype.draw.call(this, context, width, height);
+
+    var x = this.scale(this.properties.x, width);
+    var y = this.scale(this.properties.y, height);
+    var xr = this.scale(this.properties.radius, width);
+    var yr = this.scale(this.properties.radius, height);
+
+    context.beginPath();
+    context.ellipse(x, y, xr, yr, 0, 0, 2 * Math.PI, false);
+    context.closePath();
+    context.fill();
+
+    if(this.properties.outline !== undefined) {
+        context.stroke();
+    }
+}
+
 
 function CircleShape(properties) {
-    var mProperties = properties;
-    var mSuper = new Shape(properties);
-
-    this.draw = function(context, width, height) {
-        mSuper.draw(context, width, height);
-
-        var x = this.scale(mProperties.x, width);
-        var y = this.scale(mProperties.y, height);
-        var xr = this.scale(mProperties.radius, width);
-        var yr = this.scale(mProperties.radius, height);
-
-        context.beginPath();
-        context.ellipse(x, y, xr, yr, 0, 0, 2 * Math.PI, false);
-        context.closePath();
-        context.fill();
-
-        if(mProperties.outline !== undefined) {
-            context.stroke();
-        }
-    }
+    this.properties = properties;
 }
