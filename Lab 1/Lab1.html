@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Noah's Amazing Temperature Calculator</title>
+        <script>
+            function calculate() {
+                var input = Number(document.getElementById("input").value);
+                
+                if(document.getElementById('cels').checked) {
+                    document.getElementById("results").innerHTML = (input * (9/5) +32).toFixed(2) + "&deg; Fahrenheit";
+                } else if(document.getElementById('fahr').checked) {
+                    document.getElementById("results").innerHTML = ((input - 32)/1.8).toFixed(2) + "&deg; Celsius";
+                };
+            }
+        </script>
+    </head>
+    <body>
+        <h2>Noah's Amazing Temperature Calculator</h2>
+        <table style="border:solid darkblue 2px">
+            <tr>
+                <th>Input:</th>
+                <td><input type =text id="input"></td>
+            </tr>
+            <tr>
+                <th></th>
+                <td><input type="radio" id="cels" name="temps" value="Celsius"><label for="Celsius">Celsius</label><input type="radio" id="fahr" name="temps" value="Fahrenheit"><label for="Fahrenheit">Fahrenheit</label></td>
+            </tr>
+            <tr> 
+                <td></td>
+                <td style="text-align: center"><input type="button" value="Do math stuff!" onclick="calculate();"></td>
+            </tr>
+            <tr>
+                <th>Output:</th>
+                <td><span id="results"></span></td>
+            </tr>
+        </table>
+    </body>
+</html>
