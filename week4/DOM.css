@@ -1,0 +1,13 @@
+#results {
+    width: 400px;
+    height: 200px;
+    border: solid black 2px;
+}
+
+li {
+    color: green;
+}
+
+.importantItem {
+    font-weight: bold;
+}
