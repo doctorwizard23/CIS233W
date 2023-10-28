@@ -64,6 +64,41 @@ var checkDocumentWCAG = function() {
         }
     }
 
+    function addNote(tag, noteText, scaledSize) {
+        var note;
+        var img;
+        var div;
+
+        note = document.createElement("div");
+        note.className = "wcag_note";
+
+        img = document.createElement("img");
+        img.className = "wcag_note_img";
+        img.src = "http://localhost/CIS233W/wcag/warning.svg";
+        img.alt = noteText;
+        img.style.width = scaledSize + "px";
+        img.style.height = scaledSize + "px";
+
+        div = document.createElement("div");
+        div.className = "wcag_note_div";
+        div.innerHTML = noteText;
+
+        note.appendChild(img);
+        note.appendChild(div);
+        tag.parentNode.insertBefore(note, tag.nextSibling);
+
+        if(tag.style) {
+            tag.style.verticalAlign = "middle";
+        }
+
+        img.addEventListener("mouseover", function() {
+            div.style.display = "block";
+        });
+        img.addEventListener("mouseout", function() {
+            div.style.display = "none";
+        });
+    }
+
     function checkContrast(tag, text, fore, back, sizeString, weight) {    
         var foreColor = colorValues(fore);
         var backColor = colorValues(back);
@@ -75,6 +110,7 @@ var checkDocumentWCAG = function() {
         var trimmed = text.trim();
         var bounds;
         var noteText;
+        var scaledSize;
 
         if(trimmed == "") {
             return;
@@ -111,8 +147,19 @@ var checkDocumentWCAG = function() {
         if(size >= 14 && contrastRatio >= 3.0 && isBold(weight)) {
             return;
         }
-        console.log("contrast: " + contrastRatio.toFixed(1) + ", size: " + size + ", weight: " + weight + ", fore: " + foreColor + ", back: " 
-            + backColor + ", text: " + text);
+
+        scaledSize = 0.75 * size;
+        noteText = "Forecolor:&nbsp;<div class='wcag_note_color' style='background-color:" + fore + ";";
+        noteText += "width:" + scaledSize + "px;";
+        noteText += "height:" + scaledSize + "px;'></div><br>";
+        noteText += "Backcolor:&nbsp;<div class='wcag_note_color' style='background-color:" + back + ";";
+        noteText += "width:" + scaledSize + "px;";
+        noteText += "height:" + scaledSize + "px;'></div><br>";
+        noteText += "Contrast:&nbsp;" + contrastRatio.toFixed(1) + "<br>";
+        noteText += "Size:&nbsp;" + size.toFixed(1) + "<br>"; 
+        noteText += "Weight:&nbsp;" + (isBold(weight)?"Bold":"Normal") + "<br>"; 
+        addNote(tag, noteText, scaledSize);
+        
     }
 
     function checkColors(tag, fore, back, size, weight) {
@@ -150,7 +197,30 @@ var checkDocumentWCAG = function() {
         }
     }
 
+    function removeNotes() {
+        var notes = document.getElementsByClassName("wcag_note");
+        var note;
+
+        while(notes.length > 0) {
+            note = notes[0];
+            note.parentNode.removeChild(note);
+        }
+    }
+
+    function checkImages() {
+        var images = document.getElementsByTagName("img");
+        var i;
+
+        for(i = 0; i < images.length; i++) {
+            if(images[i].alt === undefined || images[i].alt.trim() == "") {
+                addNote(images[i], "No alt text!", 18);
+            }
+        }
+    }
+
     return function checkDocument() {
+        removeNotes();
+        checkImages();
         checkColors(document);
     }
 }();
